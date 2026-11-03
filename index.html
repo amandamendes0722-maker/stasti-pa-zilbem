@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Povești pe silabe · Szótagolt mesék</title>
+  <meta name="theme-color" content="#f6f1e4">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%232f6fd6'/><text x='32' y='44' font-size='30' text-anchor='middle' font-family='Georgia' fill='%23fff'>Aa</text><circle cx='50' cy='14' r='6' fill='%23f2b632'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=Noto+Serif:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>.solo .lang-switch { display: none; } .cyr h1, .cyr h2, .cyr h3, .cyr .brand-name, .cyr .brand-mark, .cyr .stat b, .cyr .gn, .cyr .dip-in h2, .cyr .cv-kit { font-family: "Noto Serif", Georgia, serif; }</style>
+  <style id="pageSize">@page { size: A4; margin: 0; }</style>
+  <script>
+    // Idioma: ?lang=ro|hu, senão o último usado, senão o do navegador. Carrega os dados do idioma antes do app.
+    var LANG = new URLSearchParams(location.search).get("lang");
+    try { LANG = LANG || localStorage.getItem("alfa-lang"); } catch (e) {}
+    var NAV2 = (navigator.language || "").slice(0, 2);
+    LANG = ["ro", "hu", "bg", "cs", "sk", "sr", "lt", "lv"].indexOf(LANG) >= 0 ? LANG : (["hu", "bg", "cs", "sk", "sr", "lt", "lv"].indexOf(NAV2) >= 0 ? NAV2 : "lv");
+    try { localStorage.setItem("alfa-lang", LANG); } catch (e) {}
+    LANG = "lv"; document.documentElement.lang = LANG;
+    // BG, CS, SK e SR têm cada um seu link de acesso: sem troca de idioma; BG usa serifa com cirílico nos títulos.
+    if (LANG === "bg" || LANG === "cs" || LANG === "sk" || LANG === "sr" || LANG === "lt" || LANG === "lv") document.documentElement.classList.add("solo");
+    if (LANG === "bg") document.documentElement.classList.add("cyr");
+    document.write('<script src="data/' + LANG + '.js"><\/script><script src="data/' + LANG + '_caiete.js"><\/script><script src="data/' + LANG + '_tools.js"><\/script>');
+  </script>
+</head>
+<body>
+  <header class="topbar no-print">
+    <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+    <a href="#/" class="brand"><span class="brand-mark" aria-hidden="true">Aa</span><span class="brand-name" id="brandName"></span></a>
+    <nav class="lang-switch" aria-label="Limbă / Nyelv">
+      <a href="?lang=ro" data-lang="ro" title="Română">RO</a>
+      <a href="?lang=hu" data-lang="hu" title="Magyar">HU</a>
+    </nav>
+    <a href="#/cauta" class="icon-btn search-btn" aria-label="Search">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    </a>
+  </header>
+  <div class="layout">
+    <nav class="sidebar no-print" id="sidebar"></nav>
+    <div class="scrim no-print" id="scrim"></div>
+    <main id="view" class="view" tabindex="-1"></main>
+  </div>
+  <nav class="tabbar no-print" id="tabbar"></nav>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script>
+    document.getElementById("brandName").textContent = KIT.name;
+    document.querySelectorAll(".lang-switch a").forEach(function (a) {
+      if (a.dataset.lang === LANG) { a.classList.add("on"); a.setAttribute("aria-current", "true"); }
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        var q = new URLSearchParams(location.search);
+        // Guarda a escolha e recarrega; sem armazenamento (ou com ?lang= na URL) troca pelo parâmetro.
+        try { localStorage.setItem("alfa-lang", a.dataset.lang); if (!q.get("lang")) { location.reload(); return; } } catch (err) {}
+        q.set("lang", a.dataset.lang);
+        location.href = "?" + q.toString() + location.hash;
+      });
+    });
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
